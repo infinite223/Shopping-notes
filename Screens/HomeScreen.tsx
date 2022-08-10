@@ -7,22 +7,39 @@ import { note, product } from '../Helpers/types';
 import { FontAwesome, FontAwesome5, AntDesign } from '@expo/vector-icons'; 
 
 const initialData = [{
-    id:"1",
     title:"My first note",
     date: new Date(),
     products: [
       {
-        id:"1",
         category:"Pieczywo",
         name:"Bułka",
         shop:"Biedronka"
       },
       {
-        id:"2",
         category:"Warzywa",
         name:"Pietruszka",
         shop:"Biedronka"
-      }
+      },
+      {
+        category:"Warzywa",
+        name:"Pietruszka",
+        shop:"Biedronka"
+      },
+      {
+        category:"Warzywa",
+        name:"Marchew",
+        shop:"Biedronka"
+      },
+      {
+        category:"Warzywa",
+        name:"Marchew",
+        shop:"Sedal"
+      },
+      {
+        category:"Pieczywo",
+        name:"Chleb",
+        shop:"Biedronka"
+      },
     ]
   }]
 
@@ -31,7 +48,7 @@ const HomeScreen = () => {
     const [notes, setNotes] = useState<Array<note>>(initialData)
 
     const createNote = (title:string, products:Array<product>) => {
-        setNotes([...notes, {id:(parseInt(notes[notes.length-1].id)+1).toString(), title:title, date:new Date(), products:products }])
+        setNotes([...notes, { title:title, date:new Date(), products:products }])
     }
 
   return (
@@ -40,7 +57,7 @@ const HomeScreen = () => {
         <FlatList
             style={[tw`mt-3`]}
             data={notes}
-            keyExtractor={(item:note)=>item.id}
+            keyExtractor={(item:note, index)=>index.toString()}
             renderItem={({ item })=> (
                 <TouchableOpacity onPress={()=>navigation.navigate('NoteScreen', {note:item})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3`, {borderRadius:10}]}>
                     <View style={[tw`flex-row justify-between`]}>
