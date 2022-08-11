@@ -77,9 +77,9 @@ const NewNoteScreen = ({}) => {
               </View>
           )}
           ListFooterComponent={()=>(
-              <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 p-2 pr-3 pl-3 flex-row justify-between`, {borderRadius:10}]}>
-                  <Text style={{fontSize:16, color:"white"}}>Next product</Text>
-                  <FontAwesome5 name="plus" size={20} color="white" />
+              <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 p-2 pr-3 pl-3 flex-row justify-between`, {borderRadius:10}]}>                
+                    <Text style={{fontSize:16, color:"white"}}>Next product</Text>
+                    <FontAwesome5 name="plus" size={20} color="white" />          
               </TouchableOpacity> 
           )}
         />
