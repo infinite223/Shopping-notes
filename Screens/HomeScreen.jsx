@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import {
   View,
@@ -7,11 +6,10 @@ import {
   Animated,
   TouchableHighlight,
   TouchableOpacity,
-  StatusBar,
-  SafeAreaView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome, FontAwesome5, AntDesign } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {SwipeListView} from 'react-native-swipe-list-view';
 import tw from 'tailwind-react-native-classnames';
@@ -19,47 +17,31 @@ import tw from 'tailwind-react-native-classnames';
 const initialData = [{
   title:"My first note",
   date: new Date(),
-  products: [
+  shops: [
     {
-      category:"Pieczywo",
-      name:"Bułka",
-      shop:"Biedronka"
+      nameShop:"Biedronka",
+      data:[
+        {category:"Warzywo", products:[{name:"Pietruszka"}, {name:"Marchew"}]},
+        {category:"Pieczywo", products:[{name:"Chleb"}, {name:"Bułka"}]}
+      ]
     },
     {
-      category:"Warzywa",
-      name:"Pietruszka",
-      shop:"Biedronka"
-    },
-    {
-      category:"Warzywa",
-      name:"Pietruszka",
-      shop:"Biedronka"
-    },
-    {
-      category:"Warzywa",
-      name:"Marchew",
-      shop:"Biedronka"
-    },
-    {
-      category:"Warzywa",
-      name:"Marchew",
-      shop:"Sedal"
-    },
-    {
-      category:"Pieczywo",
-      name:"Chleb",
-      shop:"Biedronka"
-    },
+      nameShop:"Sedal",
+      data:[
+        {category:"Mięso", products:[{name:"Salami"}, {name:"Kiełbasa"}]},
+        {category:"Picie", products:[{name:"Woda"}, {name:"Cola"}]}
+      ]
+    },  
   ]
 }]
 
 
 const HomeScreen = () => {
-  const [listData, setListData] = useState(initialData);
+  const [notes, setNotes] = useState(initialData);
   const navigation = useNavigation()
 
-  const createNote = (title, products) => {
-    setNotes([...notes, { title:title, date:new Date(), products:products }])
+  const createNote = (title, groupedProductsInShops) => {
+    setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
 }
 
   const closeRow = (rowMap, rowKey) => {
@@ -70,10 +52,10 @@ const HomeScreen = () => {
 
   const deleteRow = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
-    const newData = [...listData];
-    const prevIndex = listData.findIndex(item => item.key === rowKey);
+    const newData = [...notes];
+    const prevIndex = notes.findIndex(item => item.key === rowKey);
     newData.splice(prevIndex, 1);
-    setListData(newData);
+    setNotes(newData);
   };
 
 
@@ -100,13 +82,13 @@ const HomeScreen = () => {
       <Animated.View
         style={[styles.rowFront, {height: rowHeightAnimatedValue}]}>
         <TouchableHighlight
-          onPress={()=>navigation.navigate('NoteScreen', {note:data.item})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:45, borderRadius:10}]}
+          onPress={()=>navigation.navigate('NoteScreen', {note:data.item})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:60, borderRadius:7}]}
           underlayColor={'#aaa'}>
-          <View style={[tw`flex-row justify-between`]}>
-            <Text style={{fontSize:17}} numberOfLines={1}>
+          <View style={[tw`flex-row justify-between items-center`]}>
+            <Text style={{fontSize:17, letterSpacing:.5}} numberOfLines={1}>
               {data.item.title}
             </Text>
-            <Text style={[tw`text-green-600`, {fontSize:12}]} numberOfLines={1}>
+            <Text style={[tw`text-green-600`, {fontSize:12}]}>
               0{data.item.date.getDay()} -  0{data.item.date.getMonth()} - {data.item.date.getFullYear()}
             </Text>
           </View>
@@ -145,21 +127,13 @@ const HomeScreen = () => {
       }).start();
     } else {
       Animated.spring(rowActionAnimatedValue, {
-        toValue: 75,
+        toValue: 85,
         useNativeDriver: false
       }).start();
     }
 
     return (
       <Animated.View style={[styles.rowBack, {height: rowHeightAnimatedValue}]}>
-        <Text>Left</Text>
-        {!leftActionActivated && (
-          <TouchableOpacity
-            style={[styles.backRightBtn, styles.backRightBtnLeft]}
-            onPress={onClose}>
-             <Text>xd</Text>
-          </TouchableOpacity>
-        )}
         {!leftActionActivated && (
           <Animated.View
             style={[
@@ -171,16 +145,14 @@ const HomeScreen = () => {
               },
             ]}>
             <TouchableOpacity
-              style={[styles.backRightBtn, styles.backRightBtnRight]}
               onPress={onDelete}>
               <Animated.View
                 style={[
-                  styles.trash,
                   {
                     transform: [
                       {
                         scale: swipeAnimatedValue.interpolate({
-                          inputRange: [-90, -45],
+                          inputRange: [-70, -45],
                           outputRange: [1, 0],
                           extrapolate: 'clamp',
                         }),
@@ -188,7 +160,7 @@ const HomeScreen = () => {
                     ],
                   },
                 ]}>
-                <Text>xd</Text>
+                <FontAwesome5 name="trash" size={25} style={[tw`p-0`]} color="gray" />
               </Animated.View>
             </TouchableOpacity>
           </Animated.View>
@@ -215,16 +187,16 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={[tw`p-5 h-full bg-white` ]}>
-      <Text style={[tw`text-green-500`, {fontWeight:"bold", fontSize:30, fontFamily:`monospace`}]}>Shopping notes</Text>
+      <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30, fontFamily:`monospace`}]}>Shopping notes</Text>
       <SwipeListView
-        data={listData}
+        data={notes}
         renderItem={renderItem}
         renderHiddenItem={renderHiddenItem}
-        leftOpenValue={75}
-        rightOpenValue={-150}
+        leftOpenValue={85}
+        rightOpenValue={-70}
         disableRightSwipe
         leftActivationValue={100}
-        rightActivationValue={-200}
+        rightActivationValue={-250}
         leftActionValue={0}
         rightActionValue={-500}
       />
@@ -247,34 +219,16 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   rowFront: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
-    height: 45,
+    borderRadius: 7,
+    height: 60,
     margin: 5,
     marginBottom: 15,
-    shadowColor: '#999',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
   },
   rowFrontVisible: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
+    borderRadius: 7,
     height: 45,
     padding: 10,
     marginBottom: 15,
-  },
-  rowBack: {
-    alignItems: 'center',
-    backgroundColor: '#DDD',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
-    margin: 5,
-    marginBottom: 15,
-    borderRadius: 5,
   },
   backRightBtn: {
     alignItems: 'flex-end',
@@ -282,32 +236,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     top: 0,
-    width: 75,
+    width: 55,
     paddingRight: 17,
   },
-  backRightBtnLeft: {
-    backgroundColor: '#1f65ff',
-    right: 75,
-  },
-  backRightBtnRight: {
-    backgroundColor: 'red',
+    backRightBtnRight: {
+    backgroundColor: 'white',
     right: 0,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
-  },
-  trash: {
-    height: 25,
-    width: 25,
-    marginRight: 7,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#666',
-  },
-  details: {
-    fontSize: 12,
-    color: '#999',
   },
 });

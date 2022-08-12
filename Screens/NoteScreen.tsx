@@ -11,54 +11,55 @@ const NoteScreen = () => {
   const route = useRoute<any>()
 
   const { note } = route.params;
+  console.log(note)
 
-  let shops:Array<{nameShop:string, data:Array<{name:string, category:string}>}> = [];
-  let groupedProductsInShops: Array<{nameShop:string, data:Array<{category:string, products:Array<{name:string}>}>}> = [];
-  const sortByShop = note.products.sort();
+  // let shops:Array<{nameShop:string, data:Array<{name:string, category:string}>}> = [];
+  // let groupedProductsInShops: Array<{nameShop:string, data:Array<{category:string, products:Array<{name:string}>}>}> = [];
+  // const sortByShop = note.products.sort();
   
-  const groupByShops = () => {
-    note.products.forEach((product:product)=>{
-      if(!shops.find((shop)=>shop.nameShop===product.shop)){
-        shops.push({nameShop:product.shop, data:[]})
-        groupedProductsInShops.push({nameShop:product.shop, data:[]})
-      }
-    })
+  // const groupByShops = () => {
+  //   note.products.forEach((product:product)=>{
+  //     if(!shops.find((shop)=>shop.nameShop===product.shop)){
+  //       shops.push({nameShop:product.shop, data:[]})
+  //       groupedProductsInShops.push({nameShop:product.shop, data:[]})
+  //     }
+  //   })
 
-    note.products.forEach((product:product)=>{
-      shops.forEach(({nameShop, data}, i)=>{
-        if(nameShop===product.shop){
-          if(!data.find((item)=>item.name===product.name)){
-            shops[i].data.push({name:product.name, category:product.category})
-          }
-        }
-      })
-    })  
-  }
-  groupByShops()
-
-
+  //   note.products.forEach((product:product)=>{
+  //     shops.forEach(({nameShop, data}, i)=>{
+  //       if(nameShop===product.shop){
+  //         if(!data.find((item)=>item.name===product.name)){
+  //           shops[i].data.push({name:product.name, category:product.category})
+  //         }
+  //       }
+  //     })
+  //   })  
+  // }
+  // groupByShops()
 
 
-  const groupByCategory = () => {    
-    shops.forEach(({nameShop,data}, i)=> {
-      data.forEach((item)=>{
-        if(!groupedProductsInShops[i].data.find((data)=>data.category===item.category)){
-          groupedProductsInShops[i].data.push({category:item.category, products:[]})
-        }
-      })
-    })
 
-    shops.forEach(({nameShop, data}, i)=>{
-      data.forEach(({category, name})=>{
-        groupedProductsInShops[i].data.forEach((item, j)=>{
-          if(category===item.category){
-            groupedProductsInShops[i].data[j].products.push({name:name})
-          }
-        })
-      })
-    })
-  }
-  groupByCategory()
+
+  // const groupByCategory = () => {    
+  //   shops.forEach(({nameShop,data}, i)=> {
+  //     data.forEach((item)=>{
+  //       if(!groupedProductsInShops[i].data.find((data)=>data.category===item.category)){
+  //         groupedProductsInShops[i].data.push({category:item.category, products:[]})
+  //       }
+  //     })
+  //   })
+
+  //   shops.forEach(({nameShop, data}, i)=>{
+  //     data.forEach(({category, name})=>{
+  //       groupedProductsInShops[i].data.forEach((item, j)=>{
+  //         if(category===item.category){
+  //           groupedProductsInShops[i].data[j].products.push({name:name})
+  //         }
+  //       })
+  //     })
+  //   })
+  // }
+  // groupByCategory()
 
   
   return (
@@ -66,14 +67,14 @@ const NoteScreen = () => {
         <Text style={[tw`text-green-500`, {fontSize:20, fontWeight:"bold", letterSpacing:1}]}>{note.title?note.title:<Text style={{color:"lightgray"}}>Title</Text>}</Text>
         <FlatList 
             style={[tw`mt-3`]}
-            data={groupedProductsInShops}
-            keyExtractor={(groupedProductsInShops)=>groupedProductsInShops.nameShop}
-            renderItem={(groupedProductsInShops)=>(
+            data={note.shops}
+            keyExtractor={(shop)=>shop.nameShop}
+            renderItem={(note)=>(
                 <View style={[tw`pt-1`, {borderRadius:10}]}>
-                    <Text style={{fontSize:16, fontWeight:"600", letterSpacing:.5}}>{groupedProductsInShops.item.nameShop}</Text>   
+                    <Text style={{fontSize:16, fontWeight:"600", letterSpacing:.5}}>{note.item.nameShop}</Text>   
                     <FlatList 
                         style={[tw`mt-3`]}
-                        data={groupedProductsInShops.item.data}
+                        data={note.item.data}
                         keyExtractor={(product)=>product.category}
                         renderItem={(product)=>(
                             <View style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3`, {borderRadius:8}]}>                               
