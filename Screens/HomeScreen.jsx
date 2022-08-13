@@ -40,9 +40,17 @@ const HomeScreen = () => {
   const [notes, setNotes] = useState(initialData);
   const navigation = useNavigation()
 
-  const createNote = (title, groupedProductsInShops) => {
+  const createNote = (title, groupedProductsInShops) => { 
     setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
-}
+  }
+
+  const editNote = ({title, newNote}) => {
+    const newNotes = notes;
+    const foundNote = newNotes.findIndex((note)=>note.title===title)
+    if(foundNote>=0){
+      newNotes[foundNote].shops = newNote;
+    }
+  }
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -50,12 +58,8 @@ const HomeScreen = () => {
     }
   };
 
-  const deleteRow = (rowMap, rowKey) => {
-    closeRow(rowMap, rowKey);
-    const newData = [...notes];
-    const prevIndex = notes.findIndex(item => item.key === rowKey);
-    newData.splice(prevIndex, 1);
-    setNotes(newData);
+  const deleteRow = (title) => {
+    setNotes(notes.filter((note)=>note.title !==title));
   };
 
 
@@ -82,7 +86,7 @@ const HomeScreen = () => {
       <Animated.View
         style={[styles.rowFront, {height: rowHeightAnimatedValue}]}>
         <TouchableHighlight
-          onPress={()=>navigation.navigate('NoteScreen', {note:data.item})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:60, borderRadius:7}]}
+          onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
           underlayColor={'#aaa'}>
           <View style={[tw`flex-row justify-between items-center`]}>
             <Text style={{fontSize:17, letterSpacing:.5}} numberOfLines={1}>
@@ -104,7 +108,7 @@ const HomeScreen = () => {
       <VisibleItem
         data={data}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        removeRow={() => deleteRow(rowMap, data.item.key)}
+        removeRow={() => deleteRow(data.item.title)}
       />
     );
   };
@@ -160,7 +164,7 @@ const HomeScreen = () => {
                     ],
                   },
                 ]}>
-                <FontAwesome5 name="trash" size={25} style={[tw`p-0`]} color="gray" />
+                <FontAwesome5 name="trash" size={30} style={[tw`p-0`]} color="gray" />
               </Animated.View>
             </TouchableOpacity>
           </Animated.View>
@@ -180,7 +184,7 @@ const HomeScreen = () => {
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
         onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onDelete={() => deleteRow(data.item.title)}
       />
     );
   };
@@ -193,7 +197,7 @@ const HomeScreen = () => {
         renderItem={renderItem}
         renderHiddenItem={renderHiddenItem}
         leftOpenValue={85}
-        rightOpenValue={-70}
+        rightOpenValue={-65}
         disableRightSwipe
         leftActivationValue={100}
         rightActivationValue={-250}
@@ -220,14 +224,14 @@ const styles = StyleSheet.create({
   },
   rowFront: {
     borderRadius: 7,
-    height: 60,
+    height: 50,
     margin: 5,
-    marginBottom: 15,
+    marginBottom: 1,
   },
   rowFrontVisible: {
     borderRadius: 7,
     height: 45,
-    padding: 10,
+    padding: 0,
     marginBottom: 15,
   },
   backRightBtn: {
