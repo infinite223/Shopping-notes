@@ -21,15 +21,15 @@ const initialData = [{
     {
       nameShop:"Biedronka",
       data:[
-        {category:"Warzywo", products:[{name:"Pietruszka"}, {name:"Marchew"}]},
-        {category:"Pieczywo", products:[{name:"Chleb"}, {name:"Bułka"}]}
+        {category:"Warzywo", products:[{name:"Pietruszka"}, {name:"Marchew", status:false}]},
+        {category:"Pieczywo", products:[{name:"Chleb"}, {name:"Bułka", status:false}]}
       ]
     },
     {
       nameShop:"Sedal",
       data:[
-        {category:"Mięso", products:[{name:"Salami"}, {name:"Kiełbasa"}]},
-        {category:"Picie", products:[{name:"Woda"}, {name:"Cola"}]}
+        {category:"Mięso", products:[{name:"Salami"}, {name:"Kiełbasa", status:false}]},
+        {category:"Picie", products:[{name:"Woda"}, {name:"Cola", status:false}]}
       ]
     },  
   ]
@@ -49,6 +49,16 @@ const HomeScreen = () => {
     const foundNote = newNotes.findIndex((note)=>note.title===title)
     if(foundNote>=0){
       newNotes[foundNote].shops = newNote;
+    }
+  }
+  console.log(notes)
+  const changeStatusProduct = (title, shopIndex, categoryIndex, productIndex) => {
+    const findNoteIndex = notes.findIndex((note)=>note.title === title)
+    const newNotes = notes
+    if(findNoteIndex>=0){
+       const status = newNotes[findNoteIndex].shops[shopIndex].data[categoryIndex].products[productIndex].status;
+       newNotes[findNoteIndex].shops[shopIndex].data[categoryIndex].products[productIndex].status = !status
+       setNotes(newNotes)
     }
   }
 
@@ -86,7 +96,7 @@ const HomeScreen = () => {
       <Animated.View
         style={[styles.rowFront, {height: rowHeightAnimatedValue}]}>
         <TouchableHighlight
-          onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
+          onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote, changeStatusProduct:changeStatusProduct})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
           underlayColor={'#aaa'}>
           <View style={[tw`flex-row justify-between items-center`]}>
             <Text style={{fontSize:17, letterSpacing:.5}} numberOfLines={1}>

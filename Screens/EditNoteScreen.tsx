@@ -13,23 +13,23 @@ const EditNoteScreen = () => {
   const { note, editNote } = route.params;
 
   const addProduct = () => {
-    const newNote:Array<{nameShop:string, data:Array<{category:string, products:Array<{name:string}>}>}> = note.shops;
+    const newNote:Array<{nameShop:string, data:Array<{category:string, products:Array<{name:string, status:boolean}>}>}> = note.shops;
       const foundShop = newNote.findIndex((shop)=>shop.nameShop ===product.shop)
       if(foundShop>=0){
         const foundCategory = newNote[foundShop].data.findIndex((data)=>data.category===product.category)
         if(foundCategory>=0){
-          newNote[foundShop].data[foundCategory].products.push({name:product.name})
+          newNote[foundShop].data[foundCategory].products.push({name:product.name, status:false})
           editNote({title:note.title, newNote:newNote})
           navigation.navigate("HomeScreen")        
         }
         else{
-            newNote[foundShop].data.push({category:product.category, products:[{name:product.name}]})
+            newNote[foundShop].data.push({category:product.category, products:[{name:product.name, status:false}]})
             editNote({title:note.title, newNote:newNote})
             navigation.navigate("HomeScreen")  
         }
       }
       else {
-        newNote.push({nameShop:product.shop, data:[{category:product.category, products:[{name:product.name}]}]})
+        newNote.push({nameShop:product.shop, data:[{category:product.category, products:[{name:product.name, status:false}]}]})
         editNote({title:note.title, newNote:newNote})
         navigation.navigate("HomeScreen")        
       }
