@@ -24,7 +24,6 @@ const NoteScreen = () => {
   }
 
   useEffect(()=> {
-    console.log(note)
     note.shops.forEach((shop:{nameShop:string, data:Array<{category:string, products:Array<{name:string, status:boolean}>}>}) => {
       shop.data.forEach((category)=> {
         category.products.forEach((product)=>{

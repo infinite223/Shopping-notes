@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {SwipeListView} from 'react-native-swipe-list-view';
 import tw from 'tailwind-react-native-classnames';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialData = [{
   title:"My first note",
@@ -40,18 +41,45 @@ const HomeScreen = () => {
   const [notes, setNotes] = useState(initialData);
   const navigation = useNavigation()
 
-  const createNote = (title, groupedProductsInShops) => { 
-    setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        '@storage_Key',
+        JSON.stringify(notes)
+      ).then(()=>console.log("x", notes));
+    } catch (e) {
+    }
   }
+
+  const createNote = async (title, groupedProductsInShops) => { 
+     setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
+     storeData()
+  }
+
+  useEffect(()=>{    
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('@storage_Key')
+        setNotes(jsonValue != null && JSON.parse(jsonValue))
+      } catch(e) {
+      }
+    }
+    getData()
+  },[])
+
+  useEffect(()=>{
+    storeData()   
+  },[notes, editNote])
 
   const editNote = ({title, newNote}) => {
     const newNotes = notes;
     const foundNote = newNotes.findIndex((note)=>note.title===title)
     if(foundNote>=0){
       newNotes[foundNote].shops = newNote;
+      setNotes(newNotes)
     }
   }
-  console.log(notes)
+
   const changeStatusProduct = (title, shopIndex, categoryIndex, productIndex) => {
     const findNoteIndex = notes.findIndex((note)=>note.title === title)
     const newNotes = notes
@@ -103,7 +131,7 @@ const HomeScreen = () => {
               {data.item.title}
             </Text>
             <Text style={[tw`text-green-600`, {fontSize:12}]}>
-              0{data.item.date.getDay()} -  0{data.item.date.getMonth()} - {data.item.date.getFullYear()}
+              {/* 0{data.item.date.getDay()} -  0{data.item.date.getMonth()} - {data.item.date.getFullYear()} */}
             </Text>
           </View>
         </TouchableHighlight>
