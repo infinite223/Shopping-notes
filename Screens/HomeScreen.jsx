@@ -42,34 +42,33 @@ const HomeScreen = () => {
   const navigation = useNavigation()
 
   const storeData = async () => {
-    try {
-      await AsyncStorage.setItem(
-        '@storage_Key',
-        JSON.stringify(notes)
-      ).then(()=>console.log("x", notes));
-    } catch (e) {
-    }
+    // if(notes.length>0){
+      try {
+        await AsyncStorage.setItem(
+          '@storage_Key',
+          JSON.stringify(notes)
+        ).then(()=>console.log("x", notes));
+      } catch (e) {
+      }
+    // }
   }
 
   const createNote = async (title, groupedProductsInShops) => { 
      setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
-     storeData()
   }
 
-  useEffect(()=>{    
+  useEffect(()=>{  
+    //if(notes.length<1) {setNotes(initialData)}  
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@storage_Key')
-        setNotes(jsonValue != null && JSON.parse(jsonValue))
+        console.log(jsonValue)
+        setNotes(jsonValue ? JSON.parse(jsonValue):{}) 
       } catch(e) {
       }
     }
     getData()
   },[])
-
-  useEffect(()=>{
-    storeData()   
-  },[notes, editNote])
 
   const editNote = ({title, newNote}) => {
     const newNotes = notes;
@@ -77,8 +76,14 @@ const HomeScreen = () => {
     if(foundNote>=0){
       newNotes[foundNote].shops = newNote;
       setNotes(newNotes)
+      storeData()   
     }
   }
+
+  
+  useEffect(()=>{
+    storeData()   
+  },[notes, editNote])
 
   const changeStatusProduct = (title, shopIndex, categoryIndex, productIndex) => {
     const findNoteIndex = notes.findIndex((note)=>note.title === title)
