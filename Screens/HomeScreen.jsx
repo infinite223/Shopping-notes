@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {
+  Button,
   View,
   Text,
   StyleSheet,
   Animated,
   TouchableHighlight,
   TouchableOpacity,
+  Switch
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons'; 
@@ -14,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import tw from 'tailwind-react-native-classnames';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EventRegister } from 'react-native-event-listeners';
 
 const initialData = [{
   title:"My first note",
@@ -37,7 +40,7 @@ const initialData = [{
 }]
 
 
-const HomeScreen = () => {
+const HomeScreen = (theme) => {
   const [notes, setNotes] = useState(initialData);
   const navigation = useNavigation()
 
@@ -231,10 +234,15 @@ const HomeScreen = () => {
       />
     );
   };
-
+  const {modee, setModee} = useState<Boolean>(false);
+  const {modeea, setModeea} = useState<Boolean>(false);
   return (
     <SafeAreaView style={[tw`p-5 h-full bg-white` ]}>
       <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30, fontFamily:`monospace`}]}>Shopping notes</Text>
+      <Switch value={modee} onValueChange={(value)=>(setModee({value}), EventRegiste.emit("changeTheme", mode))  } />
+      <Switch  
+                    value={modeea}  
+                    onValueChange ={setModeea(!modeea)}/>  
       <SwipeListView
         data={notes}
         renderItem={renderItem}
@@ -248,10 +256,11 @@ const HomeScreen = () => {
         rightActionValue={-500}
       />
 
-    <TouchableOpacity onPress={()=>navigation.navigate('NewNoteScreen', {createNote:createNote})} style={[tw`bg-green-500 p-5 pr-6 pl-6 rounded-full`, { zIndex: 1,position:"absolute", right:20, bottom:20}]}>
+        <TouchableOpacity onPress={()=>navigation.navigate('NewNoteScreen', {createNote:createNote})} style={[tw`bg-green-500 p-5 pr-6 pl-6 rounded-full`, { zIndex: 1,position:"absolute", right:20, bottom:20}]}>
             <FontAwesome5 name="plus" size={24} color="white" />
         </TouchableOpacity> 
     </SafeAreaView>
+    
   );
 };
 

@@ -11,15 +11,19 @@
   },
   "dependencies": {
     "@expo/dev-tools": "^0.13.170",
+    "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "@reduxjs/toolkit": "^1.8.3",
+    "@rneui/base": "^4.0.0-rc.6",
+    "@rneui/themed": "^4.0.0-rc.6",
     "expo": "^46.0.0",
     "expo-status-bar": "~1.4.0",
     "lodash": "^4.17.21",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.4",
+    "react-native-event-listeners": "^1.0.7",
     "react-native-gesture-handler": "~2.5.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-keyboard-spacer": "^0.4.1",
@@ -29,8 +33,7 @@
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.7",
-    "tailwind-react-native-classnames": "^1.5.1",
-    "@react-native-async-storage/async-storage": "~1.17.3"
+    "tailwind-react-native-classnames": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",

@@ -5,10 +5,12 @@ import "react-native-gesture-handler"
 import HomeScreen from './Screens/HomeScreen';
 import NewNoteScreen from './Screens/NewNoteScreen';
 import NoteScreen from './Screens/NoteScreen';
-import { YellowBox } from 'react-native';
+import { YellowBox } from 'react-native'; 
 import EditNoteScreen from './Screens/EditNoteScreen';
 import { LogBox } from 'react-native';
 import React, { useState, useEffect } from 'react'
+import { ThemeProvider, Button, createTheme } from '@rneui/themed'
+import { EventRegister } from 'react-native-event-listeners';
 
 YellowBox.ignoreWarnings([
   'Non-serializable values were found in the navigation state',
@@ -16,10 +18,21 @@ YellowBox.ignoreWarnings([
 
 export default function App() {
   const Stack =  createNativeStackNavigator()
+  const [mode, setMode] = useState(false)
+
+  useEffect(()=>{
+    let eventListener:any = EventRegister.addEventListener("changeTheme", (data)=>{setMode(data);console.log(data)})
+
+    return () => {
+      EventRegister.removeEventListener(eventListener);
+    }
+
+  }, [])
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, [])
+
 
   return (
     <NavigationContainer>
