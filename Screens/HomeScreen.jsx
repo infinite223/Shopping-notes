@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   Button,
   View,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Switch
 } from 'react-native';
+import themeContext from '../config/themeContext';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import tw from 'tailwind-react-native-classnames';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EventRegister } from 'react-native-event-listeners';
+import { theme } from '../config/theme';
 
 const initialData = [{
   title:"My first note",
@@ -40,17 +42,18 @@ const initialData = [{
 }]
 
 
-const HomeScreen = (theme) => {
+const HomeScreen = () => {
   const [notes, setNotes] = useState(initialData);
   const navigation = useNavigation()
-
+  const theme = useContext(themeContext)  
+console.log(theme,"xs")
   const storeData = async () => {
     // if(notes.length>0){
       try {
         await AsyncStorage.setItem(
           '@storage_Key',
           JSON.stringify(notes)
-        ).then(()=>console.log("x", notes));
+        )
       } catch (e) {
       }
     // }
@@ -65,7 +68,6 @@ const HomeScreen = (theme) => {
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@storage_Key')
-        console.log(jsonValue)
         setNotes(jsonValue ? JSON.parse(jsonValue):{}) 
       } catch(e) {
       }
@@ -234,15 +236,16 @@ const HomeScreen = (theme) => {
       />
     );
   };
-  const {modee, setModee} = useState<Boolean>(false);
-  const {modeea, setModeea} = useState<Boolean>(false);
+  const [mode, setMode] = useState(false);
+
   return (
-    <SafeAreaView style={[tw`p-5 h-full bg-white` ]}>
-      <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30, fontFamily:`monospace`}]}>Shopping notes</Text>
-      <Switch value={modee} onValueChange={(value)=>(setModee({value}), EventRegiste.emit("changeTheme", mode))  } />
-      <Switch  
-                    value={modeea}  
-                    onValueChange ={setModeea(!modeea)}/>  
+    <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background}]}>
+      <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30}]}>Shopping notes</Text>
+      <Switch
+        trackColor={{ false: "lightgray", true: "lightgray" }}
+        thumbColor={"#0f9"}
+        style={{position:"absolute", top:50, right:20}} 
+        value={mode} onValueChange={(value)=>(setMode(value), EventRegister.emit("changeTheme", mode))  } />
       <SwipeListView
         data={notes}
         renderItem={renderItem}
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     paddingRight: 17,
   },
     backRightBtnRight: {
-    backgroundColor: 'white',
+    backgroundColor: theme.background,
     right: 0,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
