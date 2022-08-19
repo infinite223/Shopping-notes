@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-key
 
 import { LogBox } from 'react-native';
 import { product } from '../Helpers/types';
+import themeContext from '../config/themeContext';
 
 const NewNoteScreen = ({}) => {
   const navigation = useNavigation<any>()
@@ -15,6 +16,18 @@ const NewNoteScreen = ({}) => {
   const [products, setProducts] = useState([{category:"", name:"", shop:"" }])  
   const [title, setTitle] = useState("")
   const { createNote } :any = route.params;
+  const theme:any = useContext(themeContext)  
+
+  const [mode, setMode] = useState(false)
+
+  useEffect(()=>{
+    if(theme.background==="white"){
+      setMode(true)
+    }
+    else {
+      setMode(false)
+    }
+  },[theme])
 
   const editProduct = (id:number, value:string, type:string) => {
     const allProducts = products 
@@ -101,35 +114,39 @@ const NewNoteScreen = ({}) => {
     );
 
   return (
-    <SafeAreaView style={[tw`p-5 h-full bg-white`, {flex:1}]}>
-      <Text style={[tw`text-green-500`, {fontSize:20, fontWeight:"bold", letterSpacing:.5}]}>Create new shopping note</Text>
+    <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background, flex:1}]}>
+      <Text style={[tw`text-green-500 mb-2`, {fontSize:22, fontWeight:"bold", letterSpacing:.5}]}>Create new shopping note</Text>
       <TextInput
         placeholder='Title Note'
         onChangeText={(title)=>setTitle(title)}
-        style={[tw`bg-gray-100 mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}      
+        placeholderTextColor={!mode?"#bbb":"#aaa"}
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}      
       />
-      <Text style={[tw`mt-3 mb-1 ml-1`, {fontSize:15, fontWeight:"600"}]}>Products:</Text>
+      <Text style={[tw`mt-3 mb-1 ml-1`, {fontSize:15, color:theme.color, fontWeight:"600"}]}>Products:</Text>
       <KeyboardAwareScrollView>
         <KeyboardAwareFlatList 
           style={{flex: 1}}
           data={products}
           keyExtractor={(product, index)=> index.toString()}
           renderItem={(product)=>(
-              <View style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 flex-row justify-between items-center`, {flex:1, borderRadius:10}]}>
+              <View style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mb-3 p-2 pl-3 pr-3 flex-row justify-between items-center`, {flex:1, borderRadius:10}]}>
                   <View>
                       <TextInput
                           style={{fontSize:17}}
                           placeholder="Name"
+                          placeholderTextColor={!mode?"#bbb":"#aaa"}
                           onChangeText={(value)=>editProduct(product.index, value, "Name")}
                       />
                       <TextInput
                           style={{fontSize:17}}
-                          placeholder='Category'                       
+                          placeholder='Category'     
+                          placeholderTextColor={!mode?"#bbb":"#aaa"}                  
                           onChangeText={(value)=>editProduct(product.index, value, "Category")}
                       />
                       <TextInput
                           style={{fontSize:17}}
-                          placeholder='Shop'                    
+                          placeholder='Shop'            
+                          placeholderTextColor={!mode?"#bbb":"#aaa"}        
                           onChangeText={(value)=>editProduct(product.index, value, "Shop")}
                       />
                   </View>
@@ -140,9 +157,9 @@ const NewNoteScreen = ({}) => {
               </View>
           )}
           ListFooterComponent={()=>(
-              <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 mt-2 p-2 pr-3 pl-3 flex-row justify-between`, {borderRadius:10}]}>                
+              <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 mt-2 p-2 pr-3 pl-3 flex-row justify-between items-center`, {borderRadius:10}]}>                
                     <Text style={{fontSize:16, color:"white"}}>Next product</Text>
-                    <FontAwesome5 name="plus" size={20} color="white" />          
+                    <FontAwesome5 name="plus" size={17  } color="white" />          
               </TouchableOpacity> 
           )}
         />

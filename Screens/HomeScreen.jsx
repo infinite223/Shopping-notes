@@ -134,10 +134,11 @@ console.log(theme,"xs")
       <Animated.View
         style={[styles.rowFront, {height: rowHeightAnimatedValue}]}>
         <TouchableHighlight
-          onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote, changeStatusProduct:changeStatusProduct})} style={[tw`bg-gray-100 mb-2 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
+          onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote, changeStatusProduct:changeStatusProduct})}
+          style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mb-0 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
           underlayColor={'#aaa'}>
           <View style={[tw`flex-row justify-between items-center`]}>
-            <Text style={{fontSize:17, letterSpacing:.5}} numberOfLines={1}>
+            <Text style={{color:theme.color, fontSize:17, letterSpacing:.5}} numberOfLines={1}>
               {data.item.title}
             </Text>
             <Text style={[tw`text-green-600`, {fontSize:12}]}>
@@ -239,11 +240,11 @@ console.log(theme,"xs")
   const [mode, setMode] = useState(false);
 
   return (
-    <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background}]}>
+    <SafeAreaView style={[tw`p-5 h-full ${!mode?'bg-black':'bg-white'}`]}>
       <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30}]}>Shopping notes</Text>
       <Switch
         trackColor={{ false: "lightgray", true: "lightgray" }}
-        thumbColor={"#0f9"}
+        thumbColor={"#48bb78"}
         style={{position:"absolute", top:50, right:20}} 
         value={mode} onValueChange={(value)=>(setMode(value), EventRegister.emit("changeTheme", mode))  } />
       <SwipeListView

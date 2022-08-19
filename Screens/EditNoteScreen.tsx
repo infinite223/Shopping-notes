@@ -1,9 +1,10 @@
 import { Text, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { FontAwesome} from '@expo/vector-icons'; 
+import themeContext from '../config/themeContext';
 
 const EditNoteScreen = () => {
   const navigation = useNavigation<any>()
@@ -11,6 +12,18 @@ const EditNoteScreen = () => {
   const [product, setProduct] = useState({category:"", name:"", shop:"" })  
 
   const { note, editNote } = route.params;
+  const theme:any = useContext(themeContext)  
+
+  const [mode, setMode] = useState(false)
+
+  useEffect(()=>{
+    if(theme.background==="white"){
+      setMode(true)
+    }
+    else {
+      setMode(false)
+    }
+  },[theme])
 
   const addProduct = () => {
     const newNote:Array<{nameShop:string, data:Array<{category:string, products:Array<{name:string, status:boolean}>}>}> = note.shops;
@@ -37,22 +50,25 @@ const EditNoteScreen = () => {
 
 
   return (
-    <SafeAreaView style={[tw`p-5 h-full bg-white`, {flex:1}]}>
+    <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background, flex:1}]}>
       <Text style={[tw`text-green-500 mb-2`, {fontSize:20, fontWeight:"bold", letterSpacing:.5}]}>New product to "{note.title}"</Text>
 
       <TextInput
-        style={[tw`bg-gray-100 mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
         placeholder="Name"
+        placeholderTextColor={!mode?"#bbb":"#aaa"}
         onChangeText={(value)=>setProduct({category:product.category, name:value, shop:product.shop})}
       />
       <TextInput
-        style={[tw`bg-gray-100 mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
-        placeholder='Category'                       
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
+        placeholder='Category'    
+        placeholderTextColor={!mode?"#bbb":"#aaa"}                   
         onChangeText={(value)=>setProduct({category:value, name:product.name, shop:product.shop})}
       />
       <TextInput
-        style={[tw`bg-gray-100 mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
-        placeholder='Shop'                    
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
+        placeholder='Shop'          
+        placeholderTextColor={!mode?"#bbb":"#aaa"}          
         onChangeText={(value)=>setProduct({category:product.category, name:product.name, shop:value})}
       />              
      
