@@ -12,6 +12,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import themeContext from './config/themeContext';
 import { theme } from './config/theme';
 import { EventRegister } from 'react-native-event-listeners';
+import { View } from 'react-native'
 
 YellowBox.ignoreWarnings([
   'Non-serializable values were found in the navigation state',
@@ -23,7 +24,7 @@ export default function App() {
 
   // const theme = useContext(themeContext)
   useEffect(()=>{
-    let eventListener= EventRegister.addEventListener("changeTheme", (data)=>{setMode(data);console.log(data)})
+    let eventListener= EventRegister.addEventListener("changeTheme", (data)=>{setMode(data)})
 
     return () => {
       EventRegister.removeEventListener(eventListener);
@@ -40,6 +41,12 @@ export default function App() {
     <themeContext.Provider value={mode?theme.dark:theme.light}>
       <NavigationContainer>
         <SafeAreaProvider>  
+          <View style={{ 
+              position: 'absolute',
+              height: '100%', 
+              width: '100%',  
+              backgroundColor:mode?"black":"white"
+          }}/>
           <Stack.Navigator>
             <Stack.Screen name='HomeScreen' component={HomeScreen}
               options={{headerShown:false}}

@@ -69,8 +69,7 @@ const NoteScreen = () => {
                                   style={[tw`mt-3`]}
                                   data={data.item.products}
                                   keyExtractor={(product)=>product.name}
-                                  renderItem={(product)=>(
-                                    // changeStatusProduct(note.title, shop.index, data.index, product.index)
+                                  renderItem={(product)=>(           
                                       <TouchableOpacity onPress={(x)=>(changeStatusProduct(note.title, shop.index, data.index, product.index), setStatus(product.item.name))}
                                        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mb-1 p-0 pl-0 pr-3 flex-row items-center`, {borderRadius:5}]}>                                                                
                                           <Octicons name="dot-fill" size={15} color="lightgreen" style={[tw`mr-2`]} />

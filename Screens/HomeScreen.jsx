@@ -44,11 +44,12 @@ const initialData = [{
 
 const HomeScreen = () => {
   const [notes, setNotes] = useState(initialData);
+  const [activeStoreTheme, setActiveStoreTheme] = useState(false)
   const navigation = useNavigation()
+  const [mode, setMode] = useState(false);
   const theme = useContext(themeContext)  
-console.log(theme,"xs")
+
   const storeData = async () => {
-    // if(notes.length>0){
       try {
         await AsyncStorage.setItem(
           '@storage_Key',
@@ -56,15 +57,39 @@ console.log(theme,"xs")
         )
       } catch (e) {
       }
-    // }
   }
+
+  useEffect(()=>{
+    const storeTheme = async () => {
+      try {
+        await AsyncStorage.setItem(
+          '@theme',
+          JSON.stringify(mode)
+        )
+      } catch (e) {
+      }
+    }
+    activeStoreTheme&&storeTheme()
+  },[mode])
 
   const createNote = async (title, groupedProductsInShops) => { 
      setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
   }
 
   useEffect(()=>{  
-    //if(notes.length<1) {setNotes(initialData)}  
+    const getTheme = async () => {
+      try {
+        const localTheme = await AsyncStorage.getItem('@theme')
+        if(localTheme){
+          setMode(Boolean(JSON.parse(localTheme)))
+          EventRegister.emit("changeTheme", !Boolean(JSON.parse(localTheme)))
+          setActiveStoreTheme(true)
+        }
+      } catch(e) {
+      }
+    } 
+    getTheme()
+
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@storage_Key')
@@ -237,10 +262,9 @@ console.log(theme,"xs")
       />
     );
   };
-  const [mode, setMode] = useState(false);
 
   return (
-    <SafeAreaView style={[tw`p-5 h-full ${!mode?'bg-black':'bg-white'}`]}>
+    <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background}]}>
       <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30}]}>Shopping notes</Text>
       <Switch
         trackColor={{ false: "lightgray", true: "lightgray" }}
