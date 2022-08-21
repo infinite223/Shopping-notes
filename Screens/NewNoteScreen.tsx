@@ -5,10 +5,11 @@ import tw from 'tailwind-react-native-classnames';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'; 
 import { KeyboardAwareScrollView, KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
-
+import SelectList from 'react-native-dropdown-select-list';
 import { LogBox } from 'react-native';
 import { product } from '../Helpers/types';
 import themeContext from '../config/themeContext';
+import { categories } from '../Helpers/constants';
 
 const NewNoteScreen = ({}) => {
   const navigation = useNavigation<any>()
@@ -109,7 +110,7 @@ const NewNoteScreen = ({}) => {
       "Somthing wrong",
       "Title of the note must be more than 3 letters",
       [
-        { text: "OK", onPress: () => console.log("OK Pressed") }
+        { text: "OK", onPress: () => console.log("OK Pressed") },
       ]
     );
 
@@ -137,12 +138,23 @@ const NewNoteScreen = ({}) => {
                           placeholderTextColor={!mode?"#bbb":"#aaa"}
                           onChangeText={(value)=>editProduct(product.index, value, "Name")}
                       />
-                      <TextInput
+                      <SelectList 
+                        boxStyles={[tw`pl-0 text-gray-500`, {borderWidth:0}]} 
+                        searchicon={<View><Text style={{color:!mode?"#bbb":"#aaa"}}>Categories </Text></View>} 
+                        placeholder="Category" 
+                        data={categories} 
+                        setSelected={(value:string)=>editProduct(product.index, categories[parseInt(value)-1].value, "Category")}
+                        dropdownStyles={[tw`p-0 mb-1 mt-1 mr-3`, {borderWidth:0, borderRadius:0, borderLeftWidth:1, borderRightWidth:1, borderColor:!mode?"black":"lightgray"}]} 
+                        dropdownTextStyles={{color:!mode?"white":"black"}}
+                        dropdownItemStyles={[tw``]}
+                        inputStyles={{color:!mode?"#bbb":"#aaa"}}
+                      />
+                      {/* <TextInput
                           style={{fontSize:17}}
                           placeholder='Category'     
                           placeholderTextColor={!mode?"#bbb":"#aaa"}                  
                           onChangeText={(value)=>editProduct(product.index, value, "Category")}
-                      />
+                      /> */}
                       <TextInput
                           style={{fontSize:17}}
                           placeholder='Shop'            
@@ -154,7 +166,7 @@ const NewNoteScreen = ({}) => {
                   <TouchableOpacity onPress={()=>setProducts(products.filter((item, i)=>i !== product.index))}>
                         <FontAwesome5 name="trash" size={20} style={[tw`p-2`]} color="gray" />
                   </TouchableOpacity>}
-              </View>
+              </View>        
           )}
           ListFooterComponent={()=>(
               <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 mt-2 p-2 pr-3 pl-3 flex-row justify-between items-center`, {borderRadius:10}]}>                

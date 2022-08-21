@@ -1,10 +1,13 @@
-import { Text, TextInput, TouchableOpacity } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { FontAwesome} from '@expo/vector-icons'; 
 import themeContext from '../config/themeContext';
+
+import SelectList from 'react-native-dropdown-select-list';
+import { categories } from '../Helpers/constants';
 
 const EditNoteScreen = () => {
   const navigation = useNavigation<any>()
@@ -59,11 +62,21 @@ const EditNoteScreen = () => {
         placeholderTextColor={!mode?"#bbb":"#aaa"}
         onChangeText={(value)=>setProduct({category:product.category, name:value, shop:product.shop})}
       />
-      <TextInput
+      {/* <TextInput
         style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
         placeholder='Category'    
         placeholderTextColor={!mode?"#bbb":"#aaa"}                   
-        onChangeText={(value)=>setProduct({category:value, name:product.name, shop:product.shop})}
+        onChangeText={(value)=>setProduct({category:categories[parseInt(value)-1].value, name:product.name, shop:product.shop})}
+      /> */}
+      <SelectList 
+        boxStyles={[tw`pl-3 mt-3 text-gray-500 ${mode?'bg-gray-100':'bg-gray-700'}`, {borderWidth:0}]} 
+        searchicon={<View><Text style={{color:!mode?"#bbb":"#aaa"}}>Categories </Text></View>} 
+        placeholder="Category" 
+        data={categories} 
+        setSelected={(value:string)=>setProduct({category:categories[parseInt(value)-1].value, name:product.name, shop:product.shop})}
+        dropdownStyles={[tw`p-0 mb-1 mt-2`, {borderColor:!mode?"black":"lightgray"}]} 
+        dropdownTextStyles={{color:!mode?"white":"black"}}
+        inputStyles={{color:!mode?"#bbb":"#aaa"}}
       />
       <TextInput
         style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
