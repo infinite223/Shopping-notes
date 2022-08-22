@@ -73,8 +73,13 @@ const HomeScreen = () => {
   },[mode])
 
   const createNote = async (title, groupedProductsInShops) => { 
+    if(notes.length>0){
      setNotes([...notes, { title:title, date:new Date(), shops:groupedProductsInShops }])
-  }
+    }
+    else {
+      setNotes([{title:title, date:new Date(), shops:groupedProductsInShops }])
+    }
+    }
 
   useEffect(()=>{  
     const getTheme = async () => {

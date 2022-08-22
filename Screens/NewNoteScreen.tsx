@@ -1,5 +1,8 @@
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
+import { View, Text, TextInput, TouchableOpacity, Alert, Animated,  LayoutAnimation,
+  UIManager,
+  Platform,
+  Dimensions,} from 'react-native'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -114,6 +117,26 @@ const NewNoteScreen = ({}) => {
       ]
     );
 
+    const { width } = Dimensions.get('window');
+
+    const layoutAnimConfig = {
+      duration: 300,
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut, 
+      },
+      delete: {
+        duration: 100,
+        type: LayoutAnimation.Types.easeInEaseOut,
+        property: LayoutAnimation.Properties.opacity,
+      },
+    };
+    if (
+      Platform.OS === "android" &&
+      UIManager.setLayoutAnimationEnabledExperimental
+    ) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+
   return (
     <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background, flex:1}]}>
       <Text style={[tw`text-green-500 mb-2`, {fontSize:22, fontWeight:"bold", letterSpacing:.5}]}>Create new shopping note</Text>
@@ -121,7 +144,7 @@ const NewNoteScreen = ({}) => {
         placeholder='Title Note'
         onChangeText={(title)=>setTitle(title)}
         placeholderTextColor={!mode?"#bbb":"#aaa"}
-        style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}      
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mt-2 p-2 pl-3 pr-3`, {color:!mode?"white":"black", fontSize:17, borderRadius:10}]}      
       />
       <Text style={[tw`mt-3 mb-1 ml-1`, {fontSize:15, color:theme.color, fontWeight:"600"}]}>Products:</Text>
       <KeyboardAwareScrollView>
@@ -130,10 +153,10 @@ const NewNoteScreen = ({}) => {
           data={products}
           keyExtractor={(product, index)=> index.toString()}
           renderItem={(product)=>(
-              <View style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mb-3 p-2 pl-3 pr-3 flex-row justify-between items-center`, {flex:1, borderRadius:10}]}>
+              <Animated.View style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mb-3 p-2 pl-3 pr-3 flex-row justify-between items-center`, {flex:1, borderRadius:10}]}>
                   <View>
                       <TextInput
-                          style={{fontSize:17}}
+                          style={{color:!mode?"white":"black", fontSize:17}}
                           placeholder="Name"
                           placeholderTextColor={!mode?"#bbb":"#aaa"}
                           onChangeText={(value)=>editProduct(product.index, value, "Name")}
@@ -144,32 +167,26 @@ const NewNoteScreen = ({}) => {
                         placeholder="Category" 
                         data={categories} 
                         setSelected={(value:string)=>editProduct(product.index, categories[parseInt(value)-1].value, "Category")}
-                        dropdownStyles={[tw`p-0 mb-1 mt-1 mr-3`, {borderWidth:0, borderRadius:0, borderLeftWidth:1, borderRightWidth:1, borderColor:!mode?"black":"lightgray"}]} 
+                        dropdownStyles={[tw`p-0 mb-1 mt-0 mr-3`, {borderWidth:0}]} 
                         dropdownTextStyles={{color:!mode?"white":"black"}}
-                        dropdownItemStyles={[tw``]}
+                        dropdownItemStyles={[tw`pl-0 ml-0`]}
                         inputStyles={{color:!mode?"#bbb":"#aaa"}}
                       />
-                      {/* <TextInput
-                          style={{fontSize:17}}
-                          placeholder='Category'     
-                          placeholderTextColor={!mode?"#bbb":"#aaa"}                  
-                          onChangeText={(value)=>editProduct(product.index, value, "Category")}
-                      /> */}
                       <TextInput
-                          style={{fontSize:17}}
+                          style={{color:!mode?"white":"black", fontSize:17}}
                           placeholder='Shop'            
                           placeholderTextColor={!mode?"#bbb":"#aaa"}        
                           onChangeText={(value)=>editProduct(product.index, value, "Shop")}
                       />
                   </View>
                   {product.index!==0&&
-                  <TouchableOpacity onPress={()=>setProducts(products.filter((item, i)=>i !== product.index))}>
+                  <TouchableOpacity onPress={()=>(setProducts(products.filter((item, i)=>i !== product.index)), LayoutAnimation.configureNext(layoutAnimConfig))}>
                         <FontAwesome5 name="trash" size={20} style={[tw`p-2`]} color="gray" />
                   </TouchableOpacity>}
-              </View>        
+              </Animated.View>        
           )}
           ListFooterComponent={()=>(
-              <TouchableOpacity onPress={()=>setProducts([...products, {name:"", category:"", shop:""}])} style={[tw`bg-green-500 mt-2 p-2 pr-3 pl-3 flex-row justify-between items-center`, {borderRadius:10}]}>                
+              <TouchableOpacity onPress={()=>(setProducts([...products, {name:"", category:"", shop:""}]), LayoutAnimation.configureNext(layoutAnimConfig))} style={[tw`bg-green-500 mt-2 p-2 pr-3 pl-3 flex-row justify-between items-center`, {borderRadius:10}]}>                
                     <Text style={{fontSize:16, color:"white"}}>Next product</Text>
                     <FontAwesome5 name="plus" size={17  } color="white" />          
               </TouchableOpacity> 

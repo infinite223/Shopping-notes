@@ -57,29 +57,23 @@ const EditNoteScreen = () => {
       <Text style={[tw`text-green-500 mb-2`, {fontSize:20, fontWeight:"bold", letterSpacing:.5}]}>New product to "{note.title}"</Text>
 
       <TextInput
-        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-2 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-2 p-2 pl-3 pr-3`, {color:!mode?"white":"black", fontSize:17, borderRadius:10}]}    
         placeholder="Name"
         placeholderTextColor={!mode?"#bbb":"#aaa"}
         onChangeText={(value)=>setProduct({category:product.category, name:value, shop:product.shop})}
       />
-      {/* <TextInput
-        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
-        placeholder='Category'    
-        placeholderTextColor={!mode?"#bbb":"#aaa"}                   
-        onChangeText={(value)=>setProduct({category:categories[parseInt(value)-1].value, name:product.name, shop:product.shop})}
-      /> */}
       <SelectList 
         boxStyles={[tw`pl-3 mt-3 text-gray-500 ${mode?'bg-gray-100':'bg-gray-700'}`, {borderWidth:0}]} 
         searchicon={<View><Text style={{color:!mode?"#bbb":"#aaa"}}>Categories </Text></View>} 
         placeholder="Category" 
         data={categories} 
         setSelected={(value:string)=>setProduct({category:categories[parseInt(value)-1].value, name:product.name, shop:product.shop})}
-        dropdownStyles={[tw`p-0 mb-1 mt-2`, {borderColor:!mode?"black":"lightgray"}]} 
+        dropdownStyles={[tw`p-0 mb-1 mt-2`, {borderColor:!mode?"black":"white"}]} 
         dropdownTextStyles={{color:!mode?"white":"black"}}
-        inputStyles={{color:!mode?"#bbb":"#aaa"}}
+        inputStyles={{color:!mode?"white":"black"}}
       />
       <TextInput
-        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {fontSize:17, borderRadius:10}]}    
+        style={[tw`${mode?'bg-gray-100':'bg-gray-700'}  mt-3 p-2 pl-3 pr-3`, {color:!mode?"white":"black", fontSize:17, borderRadius:10}]}    
         placeholder='Shop'          
         placeholderTextColor={!mode?"#bbb":"#aaa"}          
         onChangeText={(value)=>setProduct({category:product.category, name:product.name, shop:value})}
