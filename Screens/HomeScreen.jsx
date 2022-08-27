@@ -165,7 +165,7 @@ const HomeScreen = () => {
         style={[styles.rowFront, {height: rowHeightAnimatedValue}]}>
         <TouchableHighlight
           onPress={()=>navigation.navigate('NoteScreen', {note:data.item, editNote:editNote, changeStatusProduct:changeStatusProduct})}
-          style={[tw`${mode?'bg-gray-100':'bg-gray-700'} mb-0 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
+          style={[tw`${theme.background==="white"?'bg-gray-100':'bg-gray-700'} mb-0 p-2 pl-3 pr-3 justify-center`, {height:50, borderRadius:7}]}
           underlayColor={'#aaa'}>
           <View style={[tw`flex-row justify-between items-center`]}>
             <Text style={{color:theme.color, fontSize:17, letterSpacing:.5}} numberOfLines={1}>
@@ -270,12 +270,14 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={[tw`p-5 h-full`, {backgroundColor:theme.background}]}>
-      <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30}]}>Shopping notes</Text>
-      <Switch
-        trackColor={{ false: "lightgray", true: "lightgray" }}
-        thumbColor={"#48bb78"}
-        style={{position:"absolute", top:50, right:20}} 
-        value={mode} onValueChange={(value)=>(setMode(value), EventRegister.emit("changeTheme", mode))  } />
+      <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+        <Text style={[tw`text-green-500 mb-3`, {fontWeight:"bold", fontSize:30}]}>Shopping notes</Text>
+        <Switch
+          trackColor={{ false: "lightgray", true: "lightgray" }}
+          thumbColor={"#48bb78"}
+          style={{}} 
+          value={mode} onValueChange={(value)=>(setMode(value), EventRegister.emit("changeTheme", mode))  } />
+      </View>
       <SwipeListView
         data={notes}
         renderItem={renderItem}

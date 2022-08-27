@@ -47,7 +47,8 @@ const EditNoteScreen = () => {
       else {
         newNote.push({nameShop:product.shop, data:[{category:product.category, products:[{name:product.name, status:false}]}]})
         editNote({title:note.title, newNote:newNote})
-        navigation.navigate("HomeScreen")        
+        // navigation.navigate("HomeScreen")      
+        navigation.goBack()   
       }
     }  
 

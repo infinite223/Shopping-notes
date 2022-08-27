@@ -5,14 +5,13 @@ import "react-native-gesture-handler"
 import HomeScreen from './Screens/HomeScreen';
 import NewNoteScreen from './Screens/NewNoteScreen';
 import NoteScreen from './Screens/NoteScreen';
-import { YellowBox } from 'react-native'; 
+import { YellowBox, StatusBar, View } from 'react-native'; 
 import EditNoteScreen from './Screens/EditNoteScreen';
 import { LogBox } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react'
 import themeContext from './config/themeContext';
 import { theme } from './config/theme';
 import { EventRegister } from 'react-native-event-listeners';
-import { View } from 'react-native'
 
 YellowBox.ignoreWarnings([
   'Non-serializable values were found in the navigation state',
@@ -41,6 +40,7 @@ export default function App() {
     <themeContext.Provider value={mode?theme.dark:theme.light}>
       <NavigationContainer>
         <SafeAreaProvider>  
+          <StatusBar backgroundColor={mode?"black":"white"} barStyle="light-content"/>
           <View style={{ 
               position: 'absolute',
               height: '100%', 
@@ -49,7 +49,12 @@ export default function App() {
           }}/>
           <Stack.Navigator>
             <Stack.Screen name='HomeScreen' component={HomeScreen}
-              options={{headerShown:false}}
+              options={{headerShown:false,
+                headerStyle: {
+                  backgroundColor: theme.background
+                },
+              }            
+            }
             />
             <Stack.Screen name='NewNoteScreen' component={NewNoteScreen}
               options={{headerShown:false}}
